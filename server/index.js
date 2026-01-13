@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
 const connectDB = require('./config/database');
+const { apiLimiter } = require('./middleware/rateLimiter');
 
 // Connect to database
 connectDB();
@@ -18,6 +19,9 @@ app.use(compression());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Apply rate limiting to all API routes
+app.use('/api/', apiLimiter);
 
 // Serve static files
 app.use('/uploads', express.static('uploads'));
